@@ -86,11 +86,43 @@
                 <th scope="col">Email</th>
                 <th scope="col">DOB</th>
                 <th scope="col">Age</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
             </tbody>
           </table>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">User View</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">Name : </label>
+              <div class="col-sm-9">
+                <p id="name"></p>
+              </div>
+            </div>
+            
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">First Name : </label>
+              <div class="col-sm-9">
+                <p id="first_name"></p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
     </div>
     
 </body>
@@ -114,18 +146,35 @@
                 statusCode: {
                     200: function(data) {
                         $(data.users).each(function(index,value){
-                            $('#users_table tbody').append("<tr><td>"+(index+1)+"</td><td>"+value.name+"</td><td>"+value.first_name+"</td><td>"+value.last_name+"</td><td>"+value.email+"</td><td>"+value.dob+"</td><td>"+value.age+"</td></tr>")
+                            $('#users_table tbody').append("<tr><td>"+(index+1)+"</td><td>"+value.name+"</td><td>"+value.first_name+"</td><td>"+value.last_name+"</td><td>"+value.email+"</td><td>"+value.dob+"</td><td>"+value.age+"</td><td><a class='btn btn-success view_user' data-id="+value.id+" href='#'>View</a></td></tr>")
                         })
                         $('#users_table').DataTable();
                     }
                 }
                 });
+                function logout()
+                {
+                    localStorage.removeItem('login', true);
+                }
+
+                $(document).on("click",".view_user",function() {
+                  var id = $(this).data('id')
+                    $.ajax({
+                      type: "POST",
+                      data:{id:id},
+                      url: location+"/user_management/api/user_view.php",
+                      statusCode: {
+                          200: function(data) {
+                            $('.modal').modal("show")
+                            $('#name').html(data.users[0].name)
+                            $('#first_name').html(data.users[0].first_name)
+                          }
+                      }
+                      });
+                })
     });
     
-    function logout()
-    {
-        localStorage.removeItem('login', true);
-    }
+    
 
 </script>
 </html>
