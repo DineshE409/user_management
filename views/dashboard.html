@@ -10,6 +10,10 @@
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
     }
+
+    .prev{
+      float: left;
+    }
     
     .topnav {
       overflow: hidden;
@@ -72,7 +76,7 @@
     
 <div class="topnav" id="myTopnav">
     <a href="#" class="active">Dashboard</a>
-    <a href="#" onclick="logout()" class="logout">Logout</a>
+    <a href="#" class="logout">Logout</a>
   </div>
 
     <div class="container">
@@ -116,10 +120,67 @@
                 <p id="first_name"></p>
               </div>
             </div>
+
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">Email : </label>
+              <div class="col-sm-9">
+                <p id="email"></p>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">Last Name : </label>
+              <div class="col-sm-9">
+                <p id="last_name"></p>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">DOB : </label>
+              <div class="col-sm-9">
+                <p id="dob"></p>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">Age : </label>
+              <div class="col-sm-9">
+                <p id="age"></p>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">Address1 : </label>
+              <div class="col-sm-9">
+                <p id="address_line1"></p>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">Address2 : </label>
+              <div class="col-sm-9">
+                <p id="address_line2"></p>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">Address3 : </label>
+              <div class="col-sm-9">
+                <p id="address_line3"></p>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="staticEmail" class="col-sm-3 col-form-label">phone : </label>
+              <div class="col-sm-9">
+                <p id="phone"></p>
+              </div>
+            </div>
+
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary prev view_user" data-model="show">Prev</button>
+            <button type="button" class="btn btn-primary next view_user" data-model="show">Next</button>
           </div>
         </div>
       </div>
@@ -146,33 +207,65 @@
                 statusCode: {
                     200: function(data) {
                         $(data.users).each(function(index,value){
-                            $('#users_table tbody').append("<tr><td>"+(index+1)+"</td><td>"+value.name+"</td><td>"+value.first_name+"</td><td>"+value.last_name+"</td><td>"+value.email+"</td><td>"+value.dob+"</td><td>"+value.age+"</td><td><a class='btn btn-success view_user' data-id="+value.id+" href='#'>View</a></td></tr>")
+                            $('#users_table tbody').append("<tr><td>"+(index+1)+"</td><td>"+value.name+"</td><td>"+value.first_name+"</td><td>"+value.last_name+"</td><td>"+value.email+"</td><td>"+value.dob+"</td><td>"+value.age+"</td><td><a class='btn btn-success view_user' data-model='hide' data-id="+value.id+" href='#'>View</a></td></tr>")
                         })
                         $('#users_table').DataTable();
                     }
                 }
                 });
-                function logout()
-                {
+                
+                $(document).on("click",".logout",function() {
                     localStorage.removeItem('login', true);
-                }
-
+                    window.location.href = location+"/user_management/views/login.html";
+                })
+                
                 $(document).on("click",".view_user",function() {
                   var id = $(this).data('id')
+                  var model = $(this).data('model')
                     $.ajax({
                       type: "POST",
                       data:{id:id},
                       url: location+"/user_management/api/user_view.php",
                       statusCode: {
                           200: function(data) {
-                            $('.modal').modal("show")
                             $('#name').html(data.users[0].name)
+                            $('#email').html(data.users[0].email)
                             $('#first_name').html(data.users[0].first_name)
+                            $('#last_name').html(data.users[0].last_name)
+                            $('#dob').html(data.users[0].dob)
+                            $('#age').html(data.users[0].age)
+                            $('#address_line1').html(data.users[0].address_line1)
+                            $('#address_line2').html(data.users[0].address_line2)
+                            $('#address_line3').html(data.users[0].address_line3)
+                            $('#phone').html(data.users[0].phone)
+                            if(data.prev!="" && data.prev != null)
+                            {
+                              $('.prev').data('id',data.prev.id)
+                              $('.prev').css('display','inline-block')
+                              
+                            }
+                            else{
+                              $('.prev').css('display','none')
+                            }
+                            if(data.next!="" && data.next != null)
+                            {
+                              $('.next').data('id',data.next.id)
+                              $('.next').css('display','inline-block')
+                              
+                            }
+                            else{
+                              $('.next').css('display','none')
+                            }
+                            if(model=="hide"){
+                              $('.modal').modal("show")
+                            }
                           }
                       }
                       });
                 })
     });
+
+    
     
     
 

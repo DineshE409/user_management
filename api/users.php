@@ -1,7 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: POST");
 
  
 include_once '../config/Database.php';
@@ -9,7 +8,7 @@ include_once '../config/Database.php';
 $database = new Database();
 $db = $database->getConnection();
 
-$sql = 'SELECT * FROM users order by id desc';
+$sql = 'SELECT * FROM users order by id asc';
 $result = $db->query($sql);
 if($result->num_rows > 0)
 {
