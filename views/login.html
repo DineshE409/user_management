@@ -218,7 +218,7 @@
             url: base_url,
             data: form.serialize(), // serializes the form's elements.
             statusCode: {
-                200: function() {
+                201: function() {
                     localStorage.setItem('login', true);
                     window.location.href = location+"/user_management/views/dashboard.html";
                 },
